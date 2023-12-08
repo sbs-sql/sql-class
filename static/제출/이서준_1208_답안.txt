@@ -1,0 +1,60 @@
+-- 1. 사원번호, 사원이름, 부서번호, 사수번호 조회
+select empno, ename, deptno, mgr from emp
+
+-- 2. 사원이름, 급여, 입사날짜 조회
+select ename, sal, hiredate from emp
+
+-- 3. 급여가 1500 이상 받는 사원번호, 이름, 급여, 직책 조회
+select empno, ename, sal, job from emp
+where sal >= 1500
+
+-- 4. 급여가 1500 이상이고 직책이 SALESMAN인 사원 번호, 이름, 급여, 직책 조회
+select empno, ename, sal, job from emp
+where sal >= 1500 and job = 'salesman'
+
+-- 5. 급여가 1500 ~ 2850 사이의 범위에 속하지 않는 모든 사원의 이름, 급여 조회
+select ename, sal from emp
+where sal >= 1500 and sal <= 2850
+
+-- 6. 1981년 2월 20일 ~ 1981년 5월 1일에 입사한 사원의 이름, 입사일 조회
+select ename, hiredate from emp
+where hiredate >= '1981-02-20' and hiredate <= '1981-05-01'
+order by hiredate asc
+
+-- 7. 부서가 10, 30에 속하는 사원 중 급여가 1500을 넘는 사원의 이름 및 급여 조회
+select ename, sal, deptno from emp
+where deptno = 10 or deptno = 30 and sal >= 1500
+order by sal asc
+
+-- 8. 1982년에 입사한 모든 사원의 이름과 입사일 조회
+select ename, hiredate from emp
+where date_format(hiredate, "%Y") = '1982'
+
+-- 9. 직업이 manager 사람들의 급여 평균을 조회
+select avg(sal) from emp 
+where job = 'manager'
+
+-- 10. 입사날짜가 1987-06-28 이후 입사한 사원들의 급여 평균 조회.
+select avg(sal) from emp
+where hiredate >= '1987-06-28'
+
+-- 11. 9월에 입사한 사원의 이름, 번호, 입사날짜 조회
+select ename, empno, hiredate from emp
+where date_format(hiredate, "%m") = '09'
+
+-- 12. 직업이 SALESMAN 이고 입사날짜가 1981-02-22 이후에 들어온 사원들의 급여 총합, 급여평균 조회.
+select sum(sal), avg(sal) from emp
+where job = 'salesman' and hiredate >= '1981-02-22'
+
+-- 13. 직업이 MANAGER고 SALESMAN 사원들 이름, 직업, 급여 조회 단, 급여를 내림차순으로 정렬
+select ename, job, sal from emp
+where job = 'manager' or job = 'salesman'
+order by sal desc
+
+-- 14. 보너스를 받은 사원 이름, 보너스 조회 단, 0도 제외.
+select ename, comm from emp
+where comm is not null and comm != 0
+
+-- 15. 1983년 이후 입사한 사원의 급여 10%를 보너스로 주고, 사원의 이름, 보너스 금액, 급여, 입사날짜(년도만) 조회
+select ename, sal*0.1, sal, date_format(hiredate, "%Y") from emp
+where date_format(hiredate, "%Y") >= '1983'
