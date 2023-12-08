@@ -1,0 +1,43 @@
+select empno, ename, deptno, mgr from emp
+
+select ename, sal, hiredate from emp
+
+select empno, ename, sal, job from emp
+where sal >= 1500
+
+select empno, ename, sal, job from emp
+where sal >= 1500 and job = 'SALESMAN'
+
+select ename, sal from emp 
+where sal >= 2850 or sal <= 1500
+
+select ename, hiredate from emp where hiredate 
+between '1981-02-20' and '1981-05-01'
+
+select deptno, ename, sal from emp where deptno >=10 and deptno <= 30 
+and sal >= 1500
+
+select ename, hiredate from emp 
+where hiredate >= '1982-01-01' and hiredate <='1982-12-31'
+
+select avg(sal) as '급여 평균' from emp
+where job ='MANAGER'
+
+select avg(sal) as '급여 평균' from emp
+where hiredate >= '1987-06-28'
+
+select ename, empno, hiredate from emp
+where date_format(hiredate,'%m') = '09'
+
+select sum(sal) as '급여 총합', avg(sal) as '급여 평균' from emp
+where job ='SALESMAN' and hiredate >= '1981-02-22'
+
+select ename, job, sal from emp
+where job ='MANAGER'
+order by 3 desc
+
+select ename, comm from emp
+where comm is not null
+
+select ename, comm, (sal*0.1)+sal, hiredate from emp
+where hiredate >= '1983-01-01'
