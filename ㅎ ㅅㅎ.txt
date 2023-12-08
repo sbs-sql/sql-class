@@ -1,0 +1,56 @@
+-commit  규칙
+feat : 새로운 기능(파일, 내용)이 추가될 때.
+fix : 수정할 때.
+bug : 버그를 수정할 때.
+hotfix : 긴급;;
+docs : 참고문헌/문서관련 내용 업로드.
+...
+***git fommit 규칙 검색해보기.
+데이터베이스란? 데이터를 저장하는 프로그램.
+MySQL데이터베이스(DB)를 설치했다.
+-> 스타트업 or 중소기업, 대기업에서 많이 사용.
+
+데이터베이스 -> 테이블(emp, dept) -> 데이터.
+데이터를 조회할 때  : select 
+테블을 불러올 때 :   rom
+        
+코드 : 
+-- 사원번호, 사원이름, 부서번호, 사수번호 조회
+select empno, ename, deptno, mgr from emp
+-- 사원이름, 급여, 입사날짜 조회
+select ename, sal, hiredate from emp 
+-- 급여가 1500 이상 받는 사원번호, 이름, 급여, 직책 조회
+select empno, ename, sal, job from emp where sal >= 1500
+-- 급여가 1500 이상이고 직책이 SALESMAN인 사원 번호, 이름, 급여, 직책 조회
+select deptno, ename, sal, job from emp where sal >= 1500 and job = 'salesman'
+-- 급여가 1500 ~ 2850 사이의 범위에 속하지 않는 모든 사원의 이름, 급여 조회
+select ename, sal from emp where sal not between 1500 and 2850
+
+-- 1981년 2월 20일 ~ 1981년 5월 1일에 입사한 사원의 이름, 입사일 조회
+select ename, hiredate from emp where hiredate between '1981-02-20' and '1981-05-01'
+
+-- 부서가 10, 30에 속하는 사원 중 급여가 1500을 넘는 사원의 이름 및 급여 조회
+select ename, sal from emp where deptno = 30 or deptno = 10
+
+-- 1982년에 입사한 모든 사원의 이름과 입사일 조회
+select ename, hiredate from emp where date_format(hiredate, '%Y') = '1982'
+-- 직업이 manager 사람들의 급여 평균을 조회
+select avg(sal) from emp where job = 'manager'
+
+-- 입사날짜가 1987-06-28 이후 입사한 사원들의 급여 평균 조회.
+select avg(sal) from emp where hiredate >= '1987-06-28'
+
+-- 9월에 입사한 사원의 이름, 번호, 입사날짜 조회
+select ename, empno, hiredate from emp where date_format(hiredate, '%m') = '09'
+
+-- 직업이 SALESMAN 이고 입사날짜가 1981-02-22 이후에 들어온 사원들의 급여 총합, 급여평균 조회.
+select sum(sal), avg(sal) from emp where job = 'salesman' and hiredate >= '1981-02-22'
+
+-- 직업이 MANAGER고 SALESMAN 사원들 이름, 직업, 급여 조회 단, 급여를 내림차순으로 정렬
+select ename, job, sal  from emp  where job = 'manager' or job = 'salesman' order by sal desc
+
+-- 보너스를 받은 사원 이름, 보너스 조회 단, 0도 제외.
+select ename, comm from emp where comm != '0'
+
+-- 1983년 이후 입사한 사원의 급여 10%를 보너스로 주고, 사원의 이름, 보너스 금액, 급여, 입사날짜(년도만) 조회
+select ename, comm, sal*1.1, date_format(hiredate, '%Y') from emp where date_format(hiredate, '%Y')>='1983'
