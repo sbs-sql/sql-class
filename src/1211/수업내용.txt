@@ -1,0 +1,72 @@
+-- 12월 11일 수업
+-- 관계연산자 : >,<,>=,<=,=,!= ...
+-- 논리연산자 : and, or, isnull, not, like, in, between ...
+
+-- like : 특정 단어를 검색할 때 사용
+-- ex) 사원이름에 a가 한번이라도 들어간 사원이름,번호 조회
+select ename, empno from emp where ename like '%A%'
+-- ex) A로 시작하는 사원이름, 번호 조회
+select ename, empno from emp where ename like 'A%'
+-- ex) AB로 시작하는 사원이름, 번호 조회
+select ename, empno from emp where ename like 'AB%'
+-- ex) A로 끝나는 사원이름, 번호 조회
+select ename, empno from emp where ename like '%A'
+-- 세번째 문자에 'R'이 들어간 사원이름, 번호 조회
+select ename, empno from emp where ename like '__R%'
+-- LIKE 실무에서 많이 사용, 
+select A from 쿠팡 where 검색창 like '후%'
+-- in 
+-- 부서번호가 10,20인 사원이름,부서번호 조회
+select ename, deptno from emp 
+where deptno = 10 or deptno = 20
+-- 부서번호가 10,20,30인 사원이름,부서번호 조회
+select ename, deptno from emp 
+where deptno = 10 or deptno = 20 or deptno = 30
+-- in 활용해서 풀기
+select ename, deptno from emp 
+where deptno in (10,20)
+-- distinct : 중복제거
+select distinct job from emp
+-- group by 
+-- group by : 특정 컬럼을 그룹화 할 때 사용
+-- emp테이블에서 그룹이 가능한 컬럼은 : job, sal, deptno, hiredate
+-- 쉬고 오세용~ 8시 시작
+
+-- 직책별 group by
+select job from emp group by job
+-- 집계함수 sum, avg, max, min, count
+-- 직책별 사원 수 조회
+select job, count(*) as '사원 수' from emp group by job
+-- 부서별 sal 최댓값 조회
+select deptno, max(sal) from emp group by deptno
+-- 부서번호로 그룹핑하고 부서별 평균 급여 조회
+select deptno, avg(sal) from emp group by deptno
+-- 직책별로 그룹핑하고, 그룹핑된 직책 중 sal이 5000 넘는 사원 직책, 총합급여 조회
+-- where절에는 집계함수를 사용할 수 없다.
+-- having은 group by 뒤에오고, 그룹화된 결과 집합에서 조건을 적용할 때 사용한다.
+select job, sum(sal) from emp group by job having sum(sal) >= 5000
+-- 직업이 매니저이고, 직책별로 그룹핑 후 그룹핑된 결과 평균 급여가 200 이상인
+-- 사원 직책, 평균 급여 조회하시오. 
+-- where은 무조건 from 뒤에
+select job, avg(sal) from emp where job = 'MANAGER' group by job 
+having avg(sal) >= 200 order by avg(sal) desc
+-- SQL 실행순서 최종 정리
+-- 1. from 2. where 3. group by 4.having 5.select 6.order by
+-- where와 having 차이점 다시 정리!
+-- 1. where에는 sum,max,min,count,avg 집계함수 사용불가
+-- 2. having은 group by뒤에 오고, where은 from 뒤에 온다.
+-- 3. *where은 특정 조건을 만족하는 행을 필터링할 때, having은 그룹화된 결과에 조건을 
+-- 적용할 때
+-- 4. *시간적 순서도 다르다. where은 행을 필터링하기 전 실행, having은 그룹핑 후 실행
+-- 5. having을 where처럼 사용할 수 있음 (아래 예시)
+select ename, sal from emp having sal > 2000
+-- where와 having 목적이 다르기에 그룹화된 결과를 필터링할 때만 having을 쓰자 ^^
+-- ** group by는 그룹핑 뿐만아니라 정렬작업도 같이 이루어지기 때문에 데이터가 많을 땐 신중하게 사용!
+-- distinct와 group by 차이는 정렬작업이 이루어지냐 아니냐 차이
+
+
+-- 입사년도별 입사한 사원 수와 입사날짜 조회 단, 2월에서 6월사이 입사한 사원만.
+SELECT DATE_FORMAT(hiredate,'%Y') AS '입사년도', COUNT(*)
+FROM EMP 
+where DATE_FORMAT(hiredate,'%m') >= '02' and DATE_FORMAT(hiredate,'%m') <= '06'
+GROUP BY DATE_FORMAT(hiredate,'%Y')
