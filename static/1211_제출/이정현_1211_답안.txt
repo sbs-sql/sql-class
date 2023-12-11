@@ -1,0 +1,99 @@
+-- 12월 11일 수업
+-- 관계연산자 : ><>==!=
+-- 논리연산자 : and or isnull not like in between ...
+
+-- like : 특정단어를 검색할때 사용
+-- ex) 사원이름에  a가 한번이라도 들어간 사원이름 , 번호조회
+select ename, empno from emp where ename like '%A%'
+-- ex) A로 시작하는 사원이름, 번호조회
+select ename, empno from emp where ename like 'A%'
+-- ex) A로끝나는 사원이름, 번호조회
+select ename, empno from emp where ename like '%A'
+-- ex) AB로 시작한느 사원이름 번호조회
+ select ename, empno from emp where ename like 'AB%'
+-- 세번째 문자에 'R'이 들어간 사원이름, 번호조회
+  select ename, empno from emp where ename like '__R%'
+  -- Like 실무에서 많이 사용,
+  select A from 쿠팡 where 검색창 like '후%'
+  --  in
+  -- 부서번호가 10,20,30인 사원이름, 부서번호 조회
+  select ename, deptno from emp
+  where deptno = 10 and deptno = 20 or deptno = 30
+  -- in 활용해서 풀기
+   select ename, deptno from emp
+   where deptno in (10,20)
+   -- distinct : 중복제거
+   select distinct job from emp 
+   
+   -- group by 
+   -- group by : 특정 컬럼을 그룹화할때 사용
+   -- emp 테이블에서 그룹이 가능한 컬럼은 : job, sal, deptno, hiredate
+   
+   
+   -- 직책별 group by
+   select job from emp group by JOB 
+   -- 집계함수 sum, avg, max, min, count
+   -- 직책별 사원수 조회
+   select job, count(*) as '사원 수' from emp group by job 
+   -- 부서별 sal 최댓값 조회
+   select deptno, max(sal) from emp group by DEPTNO 
+   -- group by할 때  
+   
+   -- 부서번호로 그룹핑하고 부서별 평균 급여조회
+   select deptno, avg(sal) from emp group by DEPTNO 
+   
+   -- 직책별로 그룹핑하고, 그룹핑된 직책중 sal이 5000넘는 사원 직책, 총합급여 조회
+   -- where 절에는 집계함수를 사용할수없다
+   -- having은 group by 뒤에오고 그룹화된 결과 집합에서 조건을 적용할때 사용한다
+   -- 실무에서 having 생각보다 잘안씀
+   select job, sum(sal) from emp group by job having sum(sal) >= 5000
+   -- 직업이 매니저이고, 직책별로 그룹핑 후 그룹핑된 결과 평균급여가 200이상인
+   -- 사원직책, 평균 급여 조회하시오
+    -- where은 무조건 from 뒤에 
+   select job, avg(sal) from where job = 'MANAGER' group by job
+   having avg(sal) >=200 order by avg(sal) desc 
+   
+   -- SQL 실행순서 최종정리
+   -- 1.from 2. where 3. group by 4 having 5 select 6 order by
+   -- where 와 having 차이점 다시정리
+   -- 1. where에는 sum, max, min, count, avg 집계함수 사용불가
+   -- 2. having 은 group by 뒤에오고 , where은 from 뒤에온다\
+   -- 3. where 은 특정조건을 만족하는 행을 필터링할때, having은 그룹화된 결과에 조건을
+   -- 적용할때
+   -- 4. * 시간적 순서도 다르다 where은 행을 필터링 하기전 실행, having 은 그룹핑 후 실행
+   -- 5. having을 where처럼 사용할 수 있음
+   select ename, sal from emp having sal > 2000
+   -- where 와 having 목적이 다르기에 그룹화된 결과를 필터링 할 때만 having을쓰자 ^^
+   -- ** group by 는 그룹핑뿐만 아니라 정렬작업도 같이 이루어지기 때문에 데이터가 많을 땐 신중하게 사용
+   -- distinct 와 group by 차이는 정렬작업이 이루어지냐 아니냐 차이
+   
+   
+   -- 문제1. 사원이름에 A가 들어간 모든 사원 번호, 이름, 직업 조회.
+   select empno, ename, job from emp where ENAME like '%A%'
+  
+   -- 문제2. 부서번호별 최대급여, 최소급여, 인원수, 부서번호 조회.
+   select max(sal), min(sal), count(sal), DEPTNO from emp group by DEPTNO 
+   
+   -- 문제3. 직책별 직책수, 직책 조회 단, 직책에 인원 수가 2명 이상
+   select job, count(job) from emp group by job having count(job)>=2
+   
+   -- 문제4 직책별 평균급여와 직책 조회 단, MANAGER는 제외.
+   select job, avg(sal) from emp where job!='MANAGER' group by job
+   
+   -- 문제5 부서번호별 급여합계, 부서번호 조회 단, 10번 부서만.
+   select deptno from emp group by deptno having deptno=10
+   
+   -- 문제6 부서번호별 급여합계, 부서번호 조회 단, 급여합계가 5000 이상인 부서만.
+   select deptno,sum(sal) from emp group by deptno having sum(sal)>=5000
+   
+   -- 문제7 입사년도별 입사한 사원 수와 입사날짜 조회 단, 2월에서 6월사이 입사한 사원만.
+   select hiredate, count(hiredate) from emp group by hiredate having date_format(hiredate, '%m') >= '02' and date_format(hiredate, '%m') <= '06'
+   
+   select date_format(hiredate, '%Y'), count(*) from emp where date_format(hiredate, '%m') >= '02' and date_format(hiredate, '%m') <= '06' group by date_format(hiredate, '%Y')
+  
+   
+   -- 문제8 부서별 직책별 최대급여와 인원수, 최소급여 조회 단, 10번 부서제외하고, 인원수는 3명 이하, 인원수가 적은 순서대로 정렬하시오.
+   select min(sal), max(sal) from emp  where  deptno!=10 and count(job)<=3 order by 2 desc group by job
+   
+   
+   
