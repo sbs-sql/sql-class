@@ -1,0 +1,40 @@
+-- ### 문제
+
+-- 1. 사원이름에 A가 들어간 모든 사원 번호, 이름, 직업 조회.
+select empno, ename, job from emp where ename like '%A%'
+
+-- 2. 부서번호별 최대급여, 최소급여, 인원수, 부서번호 조회.
+select deptno, max(sal) as '최대급여', min(sal) as '최소급여', count(*) as '인원수' from emp group by deptno
+
+-- 3. 직책별 직책수, 직책 조회 단, 직책에 인원 수가 2명 이상
+select job, count(*) as '직책수' from emp group by job having count(*) >= 2
+
+-- 4. 직책별 평균급여와 직책 조회 단, MANAGER는 제외.
+select job, avg(sal) as '평균급여' from emp group by job having job != 'MANAGER'
+
+-- 5. 부서번호별 급여합계, 부서번호 조회 단, 10번 부서만.
+select deptno, sum(sal) from emp group by deptno having deptno = 10
+
+-- 6. 부서번호별 급여합계, 부서번호 조회 단, 급여합계가 5000 이상인 부서만.
+select deptno, sum(sal) from emp group by deptno having sum(sal) >= 5000
+
+-- 7. 입사년도별 입사한 사원 수와 입사날짜 조회 단, 2월에서 6월사이 입사한 사원만.
+select date_format(hiredate, '%Y'), count(*) as '사원 수' from emp
+where  date_format(hiredate, '%m') >= '02' and date_format(hiredate, '%m') <= '06'
+group by date_format(hiredate, '%Y')
+
+-- 8. 부서별 직책별 최대급여와 인원수, 최소급여 조회 단, 10번 부서제외하고, 인원수는 3명 이하, 인원수가 적은 순서대로 정렬하시오.
+select deptno, max(sal) as '최대급여', count(*) as '인원수', min(sal) as '최소급여'
+from emp where deptno != '10' group by deptno, job having count(*) <= 3 order by count(*) asc
+
+-- 9. SQL 실행순서로 올바른 것은?     [2]
+--    - 1) FROM - WHERE - GROUP BY - HAVING - ORDER BY - SELECT
+--    - 2) FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
+--    - 3) FROM - WHERE - HAVING - GROUP BY - ORDER BY - SELECT
+--    - 4) FROM - WHERE - GROUP BY - SELECT - HAVING - ORDER by
+
+-- 10. 다음 보기 중 세번째 문자가 'N'인 문자열을 검색하는 조건으로 적절한 것은?     [3]
+--    - 1) SELECT*FROM 테이블명 WHERE like LIKE 'N%';
+--    - 2) SELECT*FROM 테이블명 WHERE like '%N%';
+--    - 3) SELECT*FROM 테이블명 WHERE like '[__N]%';
+--    - 4) SELECT*FROM 테이블명 WHERE like '__N%';
