@@ -1,0 +1,29 @@
+-- 1. 사원이름에 A가 들어간 모든 사원 번호, 이름, 직업 조회.
+SELECT EMPNO, ENAME, JOB FROM EMP WHERE ENAME LIKE '%A%'
+
+-- 2. 부서번호별 최대급여, 최소급여, 인원수, 부서번호 조회.
+SELECT MAX(SAL), MIN(SAL), COUNT(*), DEPTNO FROM EMP GROUP BY DEPTNO
+
+-- 3. 직책별 직책수, 직책 조회 단, 직책에 인원 수가 2명 이상
+SELECT COUNT(*), JOB FROM EMP GROUP BY JOB HAVING COUNT(*) >=2
+
+-- 4. 직책별 평균급여와 직책 조회 단, MANAGER는 제외.
+SELECT AVG(SAL), JOB FROM EMP WHERE JOB != 'MANAGER' GROUP BY JOB
+
+-- 5. 부서번호별 급여합계, 부서번호 조회 단, 10번 부서만.
+SELECT SUM(SAL), DEPTNO FROM EMP WHERE DEPTNO = 10 GROUP BY DEPTNO
+
+-- 6. 부서번호별 급여합계, 부서번호 조회 단, 급여합계가 5000 이상인 부서만.
+SELECT SUM(SAL), DEPTNO FROM EMP GROUP BY DEPTNO HAVING SUM(SAL) >= 5000
+
+-- 7. 입사년도별 입사한 사원 수와 입사날짜 조회 단, 2월에서 6월사이 입사한 사원만.
+SELECT COUNT(*), HIREDATE FROM EMP WHERE DATE_FORMAT(HIREDATE, '%m') BETWEEN 2 AND 6 GROUP BY HIREDATE
+
+-- 8. 부서별 직책별 최대급여와 인원수, 최소급여 조회 단, 10번 부서제외하고, 인원수는 3명 이하, 인원수가 적은 순서대로 정렬하시오. 
+SELECT MAX(SAL), COUNT(*), MIN(SAL) FROM EMP WHERE DEPTNO != 10 GROUP BY DEPTNO, JOB HAVING COUNT(*) <= 3 ORDER BY 2 ASC
+
+-- 9. SQL 실행순서로 올바른 것은?
+   2) FROM - WHERE - GROUP BY - HAVING - SELECT - ORDER BY
+
+-- 10. 다음 보기 중 세번째 문자가 'N'인 문자열을 검색하는 조건으로 적절한 것은?
+   4) SELECT*FROM 테이블명 WHERE like '__N%';
