@@ -1,0 +1,43 @@
+1. 사원이름에 A가 들어간 모든 사원 번호, 이름, 직업 조회
+SELECT empno, ename, job FROM emp WHERE ename like '%A%'
+2. 부서번호별 최대급여, 최소급여, 인원수 조회
+SELECT deptno, MAX(sal), MIN(sal), COUNT(*) FROM emp GROUP BY deptno
+3. 직책별 평균급여 조회 단, MANAGER는 제외
+SELECT avg(sal) FROM emp WHERE job != 'MANAGER' GROUP BY job 
+4. 부서번호별 급여합계 조회 단, 10번 부서만
+SELECT 
+    SUM(sal)
+FROM emp
+WHERE 
+    deptno = 10 
+GROUP BY deptno
+5. 부서번호별 급여합계 조회 단, 급여합계가 5000 이상인 부서만
+SELECT deptno, SUM(sal) FROM EMP GROUP BY deptno HAVING SUM(sal) >= 5000
+6. 입사년도별 입사한 사원 수 조회
+SELECT DATE_FORMAT(hiredate,'%Y') AS '입사년도', COUNT(*) FROM EMP GROUP BY DATE_FORMAT(hiredate,'%Y')
+7. 부서별 직책별 최대급여와 인원수, 최소급여 조회 단, 10번 부서제외하고, 인원수는 3명 이하, 인원수가 적은 순서대로 정렬하시오
+select
+	deptno,
+	job,
+	max(sal),
+	count(*),
+	min(sal)
+from emp
+where deptno != 10
+group by deptno, job
+having count(*) <= 3
+order by 4
+8. 부서별 직책별 최대급여와 인원수, 최소급여 조회 단, 10번 부서제외하고, 인원수는 3명 이하, 인원수가 적은 순서대로 정렬하시오. 
+select
+	deptno,
+	job,
+	max(sal),
+	count(*),
+	min(sal)
+from emp
+where deptno != 10
+group by deptno, job
+having count(*) <= 3
+order by 4
+9. 2
+10. 4
