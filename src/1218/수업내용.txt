@@ -1,0 +1,144 @@
+-- 12월 18일 
+-- 저번주 복습
+-- JOIN, 조인을 이용해서 N개의 테이블을 묶어서 결과를 추출했죠?
+-- emp 테이블(사원), dept 테이블(부서)
+-- emp에 있는 deptno와 dept에 있는 deptno를 이용해서 두 테이블을 JOIN할 수 있음.
+-- 부서번호가 20번인 사원의 이름, 직책, 입사날짜, 부서이름, 부서위치
+select 
+	e.ename,
+	e.job,
+	e.hiredate,
+	d.dname,
+	d.loc
+from emp as e
+inner join dept as d
+on e.deptno = d.deptno
+where e.deptno = 20
+-- join은 from절로 간주
+-- self join
+-- self join 하나의 테이블에서 join
+-- emp에 mgr번호는 사수의 사원번호임
+-- mgr과 empno를 이용해서 사원의 사수이름을 출력해보자~!
+select 
+	busasu.ename as "부사수 이름",
+	busasu.empno as "부사수 사원번호",
+	sasu.ename as "사수 이름",
+	sasu.empno as "사수 사원번호"
+from emp as sasu
+inner join emp as busasu
+on busasu.mgr = sasu.empno
+
+-- outer join (***left, right)
+-- 대형 프로젝트에서 outer join 정말 많이 사용함
+-- 사원이 없는 부서번호와 부서이름, 근무지를 출력하고자 한다.
+-- inner join은 교집합 이므로~ 
+select 
+	e.empno,
+	e.ename,
+	d.dname,
+	d.loc,
+	d.deptno
+from dept as d left join emp as e
+on e.deptno = d.deptno
+-- 실무에서 
+
+-- 복습문제) 직책이 MANAGER인 사원의 번호와 이름, 부서위치를 출력하시오.
+select 
+	e.empno,
+	e.ename,
+	d.dname,
+	d.loc,
+	d.deptno
+from emp as e right join dept as d
+on e.deptno = d.deptno
+where e.job = 'MANAGER'
+
+
+-- 레벨2. 제목 : 조건에 맞는 도서와 저자 리스트 출력하기
+
+-- 서브쿼리
+-- 서브쿼리는 하나의 쿼리 문장 내에 포함된 또 하나의 쿼리 문장
+-- 서브쿼리는 ()를 묶어서 실행한다.
+-- 서브쿼리가 먼저 실행 된 후, 외부 쿼리와 비교/연산 된다.
+-- 서브쿼리가 가능한 곳
+-- SELECT, FROM, WHERE, HAVING, ORDER BY, INSERT, UPDATE
+-- SELECT,FROM,WHERE 절에 서브쿼리를 종종 사용하며, 특히 *****FROM절에 서브쿼리를 많이 사용한다.
+-- 서브쿼리는 언제사용할까? 1. 데이터를 필터링할 때 2. 통계데이터를 추출할 때
+
+-- SELECT 서브쿼리 (스칼라 서브쿼리)
+-- ex) select 절에 서브쿼리 이용해보기
+select 
+	(select count(*) from emp) as '사원 수',
+	(select sum(sal) from emp) as '사원 총 급여'
+from emp 
+-- FROM 서브쿼리 (인라인 뷰)
+-- ex) from 절에 서브쿼리 이용
+-- sql 실행 순서
+-- 서브쿼리가 먼저 실행! from -> where -> select -> from -> select 
+select 
+	*
+from emp as e inner join
+(select empno from emp where job = 'MANAGER') as manager_emp
+on e.empno = manager_emp.empno
+
+-- WHERE 서브쿼리 (중첩 서브쿼리)
+-- 문제) 급여를 가장많이 받는 사원의 이름과 급여 조회 
+select ename, sal from emp
+where sal = (select max(sal) from emp)
+-- 가격이 제일 비싼 식품의 정보 출력하기 (from 절 서브쿼리, where절 서브쿼리로도 풀어보기)
+
+-- where 서브쿼리 이어서
+select max(sal) from emp
+select ename from emp where sal > 2000
+-- where절에 서브쿼리 결과가 여러 행일 때는 = 가 아니라 *****in을 사용해야한다!
+-- 단일행 =
+-- 다중행 in
+-- EXISTS, NOT EXISTS (다음시간에~ 한번에 빠르게 정리~)
+select ename,sal from emp 
+where sal in (select sal from emp where sal > 2000)
+
+-- 서브쿼리 문제
+-- 프로그래머스 3단계 -> 헤비 유저가 소유한 장소 (서브쿼리 이용해서 풀 것)
+-- 같이 풀 것 리스트
+-- 레벨2. 자동차 평균 대여 기간 구하기
+-- 레벨2. 카테고리 별 상품 개수 구하기
+-- 레벨2. NULL 처리하기
+-- 레벨2. 가격이 제일 비싼 식품의 정보 출력하기 (서브쿼리 문제)
+
+-- SELECT(조회),INSERT(저장),DELETE(삭제),UPDATE(수정)
+-- 신입개발자는 INSERT(Create),SELECT(Read),UPDATE(Update),DELETE(Delete)만 잘하면 끝~ 야근 ㅃㅃ
+-- 'CRUD'만 잘하면 끝이야~ (실무 용어)
+-- 학문적용어(데이터베이스 용어)로는 DML(Data Manipulation Language, 데이터 조작언어)
+
+-- 사원번호, 사원이름 추가
+insert into emp (empno, ename) values (8000,'황정민')
+insert into emp (empno, ename) values (8001,'정우성')
+
+-- 황정민, 정우성 입사날짜와 급여 update하기
+update emp 
+set sal = 3000,
+    hiredate = now()
+where empno = 8000
+
+update emp 
+set sal = 4000,
+    hiredate = now()
+where empno = 8001
+-- update할 때 where절을 사용하지 않으면 전체 행이 수정된다.
+
+-- 삭제
+-- 황정민 데이터 삭제
+delete from emp where empno = 8000;
+-- delete도 where절을 사용하지 않으면 전체 행이 삭제된다.
+-- 실제사건) 신입이 중요데이터를 delete로 날린적이 있음...(where절을 사용하지 않아서,..)
+-- 전체 행 삭제
+delete from emp;
+-- 전체 행을 삭제할 때는 delete를 사용하는게 아니라,
+-- truncate를 이용해서 삭제한다.
+-- emp테이블에 들어있는 모든 데이터 삭제.
+truncate table emp;
+-- truncate와 delete성능 차이
+-- delete는 한줄 한줄 지운다. truncate는 통으로 지운다.
+-- *****update : 데이터베이스(mysql, oracle 등등)에서 update란 존재하지 않는다.
+-- ???? 무슨말이냐...??? 
+-- ****실제 데이터베이스는 update문을 update하는게 아니라 delete한다음에 insert 하는거임.
